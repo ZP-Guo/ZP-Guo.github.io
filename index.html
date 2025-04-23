@@ -20,7 +20,7 @@
       position: relative;
       width: 200px;
       height: 200px;
-      border: 8px solid #333;
+      border: 5px solid #333; /* Updated to 2/3 of original width */
       border-radius: 50%;
       background: white;
     }
@@ -30,23 +30,25 @@
       bottom: 50%;
       left: 50%;
       transform-origin: bottom center;
-      background: #333;
+      background: #006DB6; /* Updated to 蔚蓝 */
     }
 
     .hour {
-      width: 6px;
-      height: 50px;
+      width: 14px;
+      height: 62px; /* Increased by ~1/4 */
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* Creating a diamond shape with larger end closer to the center */
     }
 
     .minute {
-      width: 4px;
-      height: 70px;
+      width: 10px;
+      height: 87px; /* Increased by ~1/4 */
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* Creating a diamond shape with larger end closer to the center */
     }
 
     .center {
       position: absolute;
-      width: 12px;
-      height: 12px;
+      width: 6px; /* Updated to half of the original radius */
+      height: 6px; /* Updated to half of the original radius */
       background: #333;
       border-radius: 50%;
       top: 50%;
@@ -66,8 +68,16 @@
     .tick {
       position: absolute;
       width: 2px;
-      height: 15px;
+      height: 12px;
       background: #333;
+      transform-origin: center bottom;
+    }
+
+    .mini-tick {
+      position: absolute;
+      width: 1px;
+      height: 7px; /* Adjusted to touch the black circle */
+      background: #999;
       transform-origin: center bottom;
     }
 
@@ -88,13 +98,13 @@
 
     <!-- Clock numbers and ticks -->
     <script>
+      const centerX = 100;
+      const centerY = 100;
+
       for (let i = 1; i <= 12; i++) {
         const angle = i * 30;
-        const centerX = 100;
-        const centerY = 100;
-        const tickRadius = 92; // tick touches outer circle
-        const numberRadius = 83; // number is closer to tick, half previous distance
-
+        const tickRadius = 92;
+        const numberRadius = 83;
         const rad = angle * Math.PI / 180;
 
         const tick = document.createElement('div');
@@ -110,6 +120,21 @@
         num.style.top = `${centerY - numberRadius * Math.cos(rad)}px`;
         num.textContent = i;
         document.currentScript.parentNode.appendChild(num);
+      }
+
+      // Minute ticks
+      for (let i = 0; i < 60; i++) {
+        if (i % 5 === 0) continue; // skip hour marks already drawn
+        const angle = i * 6;
+        const rad = angle * Math.PI / 180;
+        const miniRadius = 92; // Ensured that mini ticks are aligned with the black circle
+
+        const miniTick = document.createElement('div');
+        miniTick.className = 'mini-tick';
+        miniTick.style.left = `${centerX + miniRadius * Math.sin(rad)}px`;
+        miniTick.style.top = `${centerY - miniRadius * Math.cos(rad)}px`;
+        miniTick.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+        document.currentScript.parentNode.appendChild(miniTick);
       }
     </script>
   </div>
